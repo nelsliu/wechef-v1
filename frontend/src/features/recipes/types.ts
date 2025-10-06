@@ -1,10 +1,14 @@
 import type { RecipeInput } from '../../lib/validation';
+import { CATEGORY_OPTIONS, UNIT_OPTIONS } from './constants';
+
+export type Category = (typeof CATEGORY_OPTIONS)[number];
+export type Unit = (typeof UNIT_OPTIONS)[number];
 
 export interface Ingredient {
   id: number;
   name: string;
-  category?: string;
-  unit?: string;
+  category?: Category;
+  unit?: Unit;
   quantity: number;
   unit_cost: number;
 }

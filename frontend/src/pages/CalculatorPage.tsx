@@ -17,8 +17,8 @@ const convertToFormValues = (recipe?: Recipe): RecipeFormValues => ({
   ingredients:
     recipe?.ingredients.map((ingredient) => ({
       name: ingredient.name ?? '',
-      category: ingredient.category ?? '',
-      unit: ingredient.unit ?? '',
+      category: ingredient.category ?? undefined,
+      unit: ingredient.unit ?? undefined,
       quantity: ingredient.quantity ?? 0,
       unit_cost: ingredient.unit_cost ?? 0
     })) ?? []

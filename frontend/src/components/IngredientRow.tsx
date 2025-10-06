@@ -4,6 +4,7 @@ import type { FieldErrors, UseFormRegister } from 'react-hook-form';
 import { Button, Input, Label } from './UI';
 import { formatCurrency, safeMul, toNum } from '../lib/number';
 import type { RecipeFormValues } from '../lib/validation';
+import { CATEGORY_OPTIONS, UNIT_OPTIONS } from '../features/recipes/constants';
 
 interface IngredientRowProps {
   index: number;
@@ -23,38 +24,53 @@ const IngredientRow: React.FC<IngredientRowProps> = ({ index, register, onRemove
   const unitCostField = `${fieldPrefix}.unit_cost` as const;
 
   const nameError = errors?.ingredients?.[index]?.name?.message;
+  const categoryError = errors?.ingredients?.[index]?.category?.message;
   const quantityError = errors?.ingredients?.[index]?.quantity?.message;
   const costError = errors?.ingredients?.[index]?.unit_cost?.message;
+  const unitError = errors?.ingredients?.[index]?.unit?.message;
   const lineCost = safeMul(watchValues?.quantity ?? 0, watchValues?.unit_cost ?? 0);
 
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4 md:grid md:grid-cols-[2fr_repeat(3,_1fr)_auto] md:items-end">
       <div className="flex flex-col gap-2">
-        <Label htmlFor={nameField}>Ingredient</Label>
+        <Label htmlFor={nameField}>Ingredients</Label>
         <Input id={nameField} placeholder="Chicken thigh" {...register(nameField)} />
         {nameError ? <p className="text-xs text-red-400">{String(nameError)}</p> : null}
       </div>
       <div className="flex flex-col gap-2 md:flex">
         <Label htmlFor={categoryField}>Category</Label>
-        <Input id={categoryField} placeholder="Meat" {...register(categoryField)} />
+        <select
+          id={categoryField}
+          className="h-10 w-full rounded-md border border-border bg-slate-950 px-3 text-sm text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          {...register(categoryField)}
+        >
+          <option value="">Select…</option>
+          {CATEGORY_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        {categoryError ? <p className="text-xs text-red-400">{String(categoryError)}</p> : null}
       </div>
       <div className="flex flex-col gap-2 md:flex">
         <Label htmlFor={unitField}>Unit</Label>
-        <Input id={unitField} placeholder="kg" {...register(unitField)} />
+        <select
+          id={unitField}
+          className="h-10 w-full rounded-md border border-border bg-slate-950 px-3 text-sm text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          {...register(unitField)}
+        >
+          <option value="">Select…</option>
+          {UNIT_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        {unitError ? <p className="text-xs text-red-400">{String(unitError)}</p> : null}
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor={quantityField}>Qty</Label>
-        <Input
-          id={quantityField}
-          type="number"
-          step="any"
-          min={0}
-          {...register(quantityField, { valueAsNumber: true })}
-        />
-        {quantityError ? <p className="text-xs text-red-400">{String(quantityError)}</p> : null}
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor={unitCostField}>Unit Cost</Label>
+        <Label htmlFor={unitCostField}>Purchase Cost ($)</Label>
         <Input
           id={unitCostField}
           type="number"
@@ -63,6 +79,17 @@ const IngredientRow: React.FC<IngredientRowProps> = ({ index, register, onRemove
           {...register(unitCostField, { valueAsNumber: true })}
         />
         {costError ? <p className="text-xs text-red-400">{String(costError)}</p> : null}
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor={quantityField}>Qty per Serving</Label>
+        <Input
+          id={quantityField}
+          type="number"
+          step="any"
+          min={0}
+          {...register(quantityField, { valueAsNumber: true })}
+        />
+        {quantityError ? <p className="text-xs text-red-400">{String(quantityError)}</p> : null}
       </div>
       <div className="flex flex-col items-start gap-3 md:items-end">
         <p className="text-sm text-slate-400">Line Cost</p>

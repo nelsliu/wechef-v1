@@ -21,8 +21,8 @@ interface RecipeFormProps {
 
 const emptyIngredient: RecipeFormValues['ingredients'][number] = {
   name: '',
-  category: '',
-  unit: '',
+  category: undefined,
+  unit: undefined,
   quantity: 0,
   unit_cost: 0
 };
