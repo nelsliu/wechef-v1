@@ -4,12 +4,20 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, abort, jsonify, request
 from flask_cors import CORS
+from flask_migrate import Migrate
 from pydantic import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
 from db import db, init_db
 from models import Ingredient, Recipe
 from schemas import RecipeIn, RecipeListItem, RecipeOut
+
+
+def resolve_unit_cost(ing_in) -> float:
+    purchase_qty = getattr(ing_in, "purchase_qty", 0) or 0
+    if purchase_qty > 0:
+        return float(getattr(ing_in, "purchase_cost", 0) or 0) / float(purchase_qty)
+    return float(getattr(ing_in, "unit_cost", 0) or 0)
 
 
 def create_app() -> Flask:
@@ -24,6 +32,7 @@ def create_app() -> Flask:
     app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
     init_db(app)
+    migrate = Migrate(app, db)
 
     with app.app_context():
         db.create_all()
@@ -62,8 +71,10 @@ def create_app() -> Flask:
                             name=ingredient.name,
                             category=ingredient.category,
                             unit=ingredient.unit,
+                            purchase_cost=ingredient.purchase_cost,
+                            purchase_qty=ingredient.purchase_qty,
+                            unit_cost=resolve_unit_cost(ingredient),
                             quantity=ingredient.quantity,
-                            unit_cost=ingredient.unit_cost,
                         )
                     )
 
@@ -104,8 +115,10 @@ def create_app() -> Flask:
                             name=ing.name,
                             category=ing.category,
                             unit=ing.unit,
+                            purchase_cost=ing.purchase_cost,
+                            purchase_qty=ing.purchase_qty,
+                            unit_cost=resolve_unit_cost(ing),
                             quantity=ing.quantity,
-                            unit_cost=ing.unit_cost,
                         )
                     )
 

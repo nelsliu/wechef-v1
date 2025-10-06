@@ -21,3 +21,5 @@ out/
 Thumbs.db
 .idea/
 .vscode/
+backend/instance/wechef.db
+backend/instance/wechef.db

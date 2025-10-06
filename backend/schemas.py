@@ -8,8 +8,10 @@ class IngredientIn(BaseModel):
     name: str
     category: Optional[str] = None
     unit: Optional[str] = None
+    purchase_cost: float = 0
+    purchase_qty: float = 0
+    unit_cost: Optional[float] = None
     quantity: float = 0
-    unit_cost: float = 0
 
     @field_validator("name")
     @classmethod
@@ -20,8 +22,15 @@ class IngredientIn(BaseModel):
         return v[:255]
 
 
-class IngredientOut(IngredientIn):
+class IngredientOut(BaseModel):
     id: int
+    name: str
+    category: Optional[str] = None
+    unit: Optional[str] = None
+    purchase_cost: float
+    purchase_qty: float
+    unit_cost: float
+    quantity: float
 
     model_config = {"from_attributes": True}
 

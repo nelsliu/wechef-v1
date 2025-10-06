@@ -36,6 +36,27 @@ Flask-based API for the WeChef project.
 
 The app auto-creates its SQLite tables on startup. Default database location is `wechef.db` in this directory.
 
+## Database Migrations
+We use Flask-Migrate (Alembic) for schema changes.
+
+First-time setup:
+```bash
+pip install -r requirements.txt
+export FLASK_APP=app.py  # or ensure .env sets FLASK_APP
+flask db init
+```
+
+Creating a migration after model changes:
+```bash
+flask db migrate -m "Add purchase fields"
+flask db upgrade
+```
+
+To rollback one step:
+```bash
+flask db downgrade -1
+```
+
 ## API Overview
 - `GET /health` – service health check (`{"status": "ok"}`)
 - `GET /recipes` – list recipes with `id`, `name`, and `updated_at`
