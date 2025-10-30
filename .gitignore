@@ -23,3 +23,4 @@ Thumbs.db
 .vscode/
 backend/instance/wechef.db
 backend/instance/wechef.db
+init
