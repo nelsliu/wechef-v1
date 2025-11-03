@@ -5,10 +5,12 @@ export type Category = (typeof CATEGORY_OPTIONS)[number];
 export type Unit = (typeof UNIT_OPTIONS)[number];
 
 export interface Ingredient {
-  id: number;
+  id?: number;
   name: string;
   category?: Category;
   unit?: Unit;
+  purchase_cost: number;
+  purchase_qty: number;
   quantity: number;
   unit_cost: number;
 }

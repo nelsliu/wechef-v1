@@ -23,6 +23,11 @@ React + TypeScript + Vite interface for the WeChef recipe costing tool.
    ```
 4. Open the Vite URL from the terminal output (defaults to http://127.0.0.1:5173) and interact with the app.
 
+## Recipe Form Basics
+- Each ingredient captures purchase details (`Purchase Cost ($)`, `Purchase Qty`) alongside the serving-level quantity.
+- The UI derives `Unit Cost` as `purchase_cost / purchase_qty` whenever a non-zero purchase quantity is provided; otherwise it falls back to the value returned by the API.
+- Submissions include both the raw purchase data and the computed unit cost. The backend recalculates `unit_cost` as the source of truth before persisting.
+
 ## Available Scripts
 - `npm run dev` – start Vite in development mode
 - `npm run build` – create a production build

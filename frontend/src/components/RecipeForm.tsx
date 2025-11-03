@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import IngredientRow from './IngredientRow';
 import CostSummary from './CostSummary';
 import { Button, Input, Label } from './UI';
+import { safeDiv } from '../lib/number';
 import {
   defaultRecipeValues,
   recipeSchema,
@@ -23,8 +24,10 @@ const emptyIngredient: RecipeFormValues['ingredients'][number] = {
   name: '',
   category: undefined,
   unit: undefined,
-  quantity: 0,
-  unit_cost: 0
+  purchase_cost: 0,
+  purchase_qty: 0,
+  unit_cost: 0,
+  quantity: 0
 };
 
 const RecipeForm: React.FC<RecipeFormProps> = ({ initialValues, onSubmit, onCancel, isSaving }) => {
@@ -34,7 +37,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ initialValues, onSubmit, onCanc
     mode: 'onBlur'
   });
 
-  const { control, register, handleSubmit, formState, reset, watch } = form;
+  const { control, register, handleSubmit, formState, reset, watch, setValue, unregister } = form;
 
   const fieldArray = useFieldArray({
     control,
@@ -59,7 +62,24 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ initialValues, onSubmit, onCanc
   const servings = watch('servings');
 
   const submitHandler = handleSubmit(async (values) => {
-    await onSubmit(values);
+    const normalised = {
+      ...values,
+      ingredients: values.ingredients.map((ingredient) => {
+        const purchase_cost = ingredient.purchase_cost ?? 0;
+        const purchase_qty = ingredient.purchase_qty ?? 0;
+        const fallbackUnitCost = ingredient.unit_cost ?? 0;
+        const derivedUnitCost = purchase_qty > 0 ? safeDiv(purchase_cost, purchase_qty) : fallbackUnitCost;
+
+        return {
+          ...ingredient,
+          purchase_cost,
+          purchase_qty,
+          unit_cost: derivedUnitCost
+        };
+      })
+    } satisfies RecipeInput;
+
+    await onSubmit(normalised);
   });
 
   const ingredientErrors = formState.errors.ingredients;
@@ -108,6 +128,8 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ initialValues, onSubmit, onCanc
               key={field.id}
               index={index}
               register={register}
+              unregister={unregister}
+              setValue={setValue}
               watchValues={ingredients?.[index] ?? emptyIngredient}
               onRemove={() => fieldArray.remove(index)}
               canRemove={fieldArray.fields.length > 1}

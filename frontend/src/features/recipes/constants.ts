@@ -4,7 +4,8 @@ export const FIELD_ORDER = [
   'Purchase Cost ($)',
   'Purchase Qty',
   'Qty per Serving',
-  'Unit'
+  'Unit',
+  'Unit Cost'
 ] as const;
 
 export const CATEGORY_OPTIONS = [

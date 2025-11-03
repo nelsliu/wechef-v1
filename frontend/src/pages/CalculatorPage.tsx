@@ -19,8 +19,10 @@ const convertToFormValues = (recipe?: Recipe): RecipeFormValues => ({
       name: ingredient.name ?? '',
       category: ingredient.category ?? undefined,
       unit: ingredient.unit ?? undefined,
-      quantity: ingredient.quantity ?? 0,
-      unit_cost: ingredient.unit_cost ?? 0
+      purchase_cost: ingredient.purchase_cost ?? 0,
+      purchase_qty: ingredient.purchase_qty ?? 0,
+      unit_cost: ingredient.unit_cost ?? 0,
+      quantity: ingredient.quantity ?? 0
     })) ?? []
 });
 

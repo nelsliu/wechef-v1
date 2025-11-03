@@ -12,7 +12,7 @@ export const safeMul = (a: unknown, b: unknown): number => {
 export const safeDiv = (a: unknown, b: unknown): number => {
   const numerator = toFiniteNumber(a);
   const denominator = toFiniteNumber(b);
-  if (denominator === 0) {
+  if (denominator <= 0) {
     return 0;
   }
   return numerator / denominator;
@@ -22,6 +22,14 @@ export const truncate = (value: unknown, decimals = 2): number => {
   const num = toFiniteNumber(value);
   const factor = 10 ** decimals;
   return Math.trunc(num * factor) / factor;
+};
+
+export const to2 = (value: unknown): number => {
+  const num = toFiniteNumber(value);
+  if (!Number.isFinite(num)) {
+    return 0;
+  }
+  return Math.round(num * 100) / 100;
 };
 
 export const formatCurrency = (

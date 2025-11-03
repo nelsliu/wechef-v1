@@ -10,7 +10,13 @@ interface CostSummaryProps {
 
 const CostSummary: React.FC<CostSummaryProps> = ({ servings, ingredients }) => {
   const lineTotals = React.useMemo(
-    () => ingredients.map((item) => safeMul(item?.quantity ?? 0, item?.unit_cost ?? 0)),
+    () =>
+      ingredients.map((item) => {
+        const purchaseCost = item?.purchase_cost ?? 0;
+        const purchaseQty = item?.purchase_qty ?? 0;
+        const unitCost = purchaseQty > 0 ? safeDiv(purchaseCost, purchaseQty) : item?.unit_cost ?? 0;
+        return safeMul(item?.quantity ?? 0, unitCost);
+      }),
     [ingredients]
   );
 
